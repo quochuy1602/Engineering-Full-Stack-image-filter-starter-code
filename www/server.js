@@ -57,8 +57,12 @@ const util_1 = require("./util/util");
         }
         try {
             let filterImage = yield util_1.filterImageFromURL(image_url);
+<<<<<<< HEAD
             response.data = filterImage;
             res.send(response);
+=======
+            res.sendFile(filterImage);
+>>>>>>> db725a41e1b95b38a9322cd0b61ed96c16bb3c14
         }
         catch (ex) {
             response.msg = "Error";
@@ -67,6 +71,10 @@ const util_1 = require("./util/util");
         }
         if (response.code === 200) {
             let pathFile = path.resolve(__dirname, "util", "tmp", response.data);
+<<<<<<< HEAD
+=======
+            console.log(pathFile);
+>>>>>>> db725a41e1b95b38a9322cd0b61ed96c16bb3c14
             util_1.deleteLocalFiles([pathFile]);
         }
     }));
