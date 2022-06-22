@@ -36,7 +36,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req:express.Request, res:express.Response) => {
     let response = {
       code: 200,
       data: '',
@@ -52,8 +52,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     }
     try{
       let filterImage = await filterImageFromURL(image_url);
-      response.data = filterImage;
-      res.send(response);
+      res.sendFile(filterImage);
     }catch(ex){
       response.msg = "Error";
       response.code = 500;
@@ -61,6 +60,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     }
     if (response.code === 200) {
       let pathFile = path.resolve(__dirname, "util", "tmp", response.data)
+      console.log(pathFile);
       deleteLocalFiles([pathFile])
     }
   } );
