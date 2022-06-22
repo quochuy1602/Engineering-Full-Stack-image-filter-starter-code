@@ -19,6 +19,7 @@ const util_1 = require("./util/util");
     const app = express_1.default();
     // Set the network port
     const port = process.env.PORT || 8082;
+    const path = require('path');
     // Use the body parser middleware for post requests
     app.use(body_parser_1.default.json());
     // @TODO1 IMPLEMENT A RESTFUL ENDPOINT
@@ -42,26 +43,31 @@ const util_1 = require("./util/util");
         res.send("try GET /filteredimage?image_url={{}}");
     }));
     app.get("/filteredimage", (req, res) => __awaiter(this, void 0, void 0, function* () {
+        let response = {
+            code: 200,
+            data: '',
+            msg: ''
+        };
         let image_url = req.query.image_url;
         console.log("try GET /filteredimage?image_url=" + image_url);
         if (image_url == '') {
-            res.send("Image is valid");
-            return;
+            response.msg = "Image is valid";
+            response.code = 500;
+            res.send(response);
         }
         try {
             let filterImage = yield util_1.filterImageFromURL(image_url);
-            //deleteLocalFiles(image_url);
-            res.send({
-                "code": 200,
-                "data": filterImage
-            });
+            response.data = filterImage;
+            res.send(response);
         }
-        catch (e) {
-            res.send({
-                "code": 500,
-                "error": e
-            });
-            console.error(e);
+        catch (ex) {
+            response.msg = "Error";
+            response.code = 500;
+            res.send(response);
+        }
+        if (response.code === 200) {
+            let pathFile = path.resolve(__dirname, "util", "tmp", response.data);
+            util_1.deleteLocalFiles([pathFile]);
         }
     }));
     // Start the Server
